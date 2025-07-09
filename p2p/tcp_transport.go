@@ -6,6 +6,23 @@ import (
 	"fmt"
 )
 
+
+// TCPPeer represents the remove node over a TCP established connection
+
+type TCPPeer struct {
+
+	// conn is the underlying connection of the peer 
+	conn net.Conn 
+
+	// if we dial and retrieve a conn => outbound == true
+	// if we accept and retrieve a conn => outbound == flase 
+	outbound bool
+}
+
+func NewTCPPeer(conn net.Conn, outbound bool) *TCPPeer {
+	
+}
+
 type TCPTransport struct {
 	listenAddress string 
 	listener      net.Listener
@@ -42,6 +59,12 @@ func (t *TCPTransport) startAcceptLoop() {
 		if err != nil {
 			fmt.Printf("TCP accept error: %s\n", err)
 		}
+		go t.handleConn(conn)
 	}
+}
+
+
+func (t *TCPTransport) handleConn(conn net.Conn) {
+	fmt.Printf("New incoming connection %+v\n",conn )
 }
 
