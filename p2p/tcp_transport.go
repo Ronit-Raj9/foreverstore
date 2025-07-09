@@ -1,11 +1,10 @@
 package p2p
 
 import (
+	"fmt"
 	"net"
 	"sync"
-	"fmt"
 )
-
 
 // TCPPeer represents the remove node over a TCP established connection
 
@@ -20,7 +19,10 @@ type TCPPeer struct {
 }
 
 func NewTCPPeer(conn net.Conn, outbound bool) *TCPPeer {
-	
+	return &TCPPeer{
+		conn: conn,
+		outbound: outbound,
+	}
 }
 
 type TCPTransport struct {
@@ -59,12 +61,15 @@ func (t *TCPTransport) startAcceptLoop() {
 		if err != nil {
 			fmt.Printf("TCP accept error: %s\n", err)
 		}
+
 		go t.handleConn(conn)
 	}
 }
 
 
 func (t *TCPTransport) handleConn(conn net.Conn) {
-	fmt.Printf("New incoming connection %+v\n",conn )
+	peer := NewTCPPeer(conn, true)
+
+	fmt.Printf("New incoming connection %+v\n",peer )
 }
 
